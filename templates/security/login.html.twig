@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center py-4">
+                    <h1 class="text-center">🔐 Bienvenue sur MyLoc !</h1>
+                    <p class="text-center">Connecte-toi pour accéder à ton compte</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {# Email #}
+                        <div class="mb-3">
+                            <label for="inputEmail" class="form-label">Adresse email</label>
+                            <input type="email" 
+                                   value="{{ last_username }}" 
+                                   name="_username" 
+                                   id="inputEmail" 
+                                   class="form-control" 
+                                   placeholder="ton-email@exemple.com"
+                                   autocomplete="email" 
+                                   required 
+                                   autofocus>
+                        </div>
+
+                        {# Mot de passe #}
+                        <div class="mb-3">
+                            <label for="inputPassword" class="form-label">Mot de passe</label>
+                            <input type="password" 
+                                   name="_password" 
+                                   id="inputPassword" 
+                                   class="form-control" 
+                                   placeholder="Ton mot de passe"
+                                   autocomplete="current-password" 
+                                   required>
+                        </div>
+
+                        {# CSRF Token #}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        {# Bouton #}
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-sign-in-alt"></i> Se connecter
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="card-footer text-center">
+                    Pas encore de compte ? <a href="{{ path('app_register') }}">Inscris-toi ici</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

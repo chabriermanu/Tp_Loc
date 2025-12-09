@@ -1,0 +1,82 @@
+/* Styles généraux */
+body {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+/* Boutons modernes */
+.btn-modern {
+    padding: 10px 25px;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.btn-outline-light.btn-modern {
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.btn-outline-light.btn-modern:hover {
+    background-color: #fff;
+    color: #212529;
+    border-color: #fff;
+}
+
+.btn-primary.btn-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary.btn-modern:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.btn-outline-danger.btn-modern {
+    border: 2px solid #dc3545;
+}
+
+.btn-outline-danger.btn-modern:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* Navbar */
+.navbar {
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.nav-link {
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    transform: translateX(5px);
+}
+
+/* Cards */
+.card {
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}

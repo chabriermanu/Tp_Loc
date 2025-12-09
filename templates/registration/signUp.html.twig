@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rejoins nous {% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center py-4">
+                    <h1 class="text-center">✨ Rejoins MyLoc !</h1>
+                    <p class="text-center">Crée ton compte pour commencer à emprunter</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
+                    
+                        {# Email #}
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.email, 'Adresse email', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'ton-email@exemple.com'}}) }}
+                            {{ form_errors(registrationForm.email) }}
+                        </div>
+
+                        {# Mot de passe #}
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'placeholder': 'Minimum 6 caractères'}}) }}
+                            {{ form_errors(registrationForm.plainPassword) }}
+                            <small class="text-muted">Minimum 6 caractères</small>
+                        </div>
+
+                        {# Conditions #}
+                        <div class="mb-3 form-check">
+                            {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation', {'label_attr': {'class': 'form-check-label'}}) }}
+                            {{ form_errors(registrationForm.agreeTerms) }}
+                        </div>
+
+                        {# Bouton #}
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-user-plus"></i> Créer mon compte
+                        </button>
+
+                    {{ form_end(registrationForm) }}
+                </div>
+
+                <div class="card-footer text-center">
+                    Déjà un compte ? <a href="#">Connecte-toi ici</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

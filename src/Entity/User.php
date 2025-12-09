@@ -41,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $items;
 
     #[ORM\Column]
-    private ?int $points = null;
+    private ?int $points = 0;
 
     /**
      * @var Collection<int, Loan>
