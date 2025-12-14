@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Repository;
-
+use App\Entity\User;
 use App\Entity\Loan;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,7 +15,25 @@ class LoanRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Loan::class);
     }
-
+    public function findByItemOwner(User $owner): array
+    {
+        return $this->createQueryBuilder('l')
+            ->join('l.item', 'i')
+            ->where('i.idUser = :owner')
+            ->setParameter('owner', $owner)
+            ->orderBy('l.start', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByBorrower(User $borrower): array
+    {
+        return $this->createQueryBuilder('l')
+            ->where('l.idUser = :borrower')
+            ->setParameter('borrower', $borrower)
+            ->orderBy('l.start', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return Loan[] Returns an array of Loan objects
     //     */

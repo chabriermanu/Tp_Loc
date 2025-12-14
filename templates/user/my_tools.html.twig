@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes outils{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Catalogue d'outils</h1>
+        <p class="lead text-muted">tous les outils disponibles à la location</p>
+    </div>
+
+    {% if user.items is empty %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle me-2"></i>
+            Aucun outil disponible pour le moment.
+        </div>
+    {% else %}
+        <div class="row g-4">
+            {% for item in user.items %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        {% if item.picture %}
+                            <img src="{{ asset('uploads/items/' ~ item.picture) }}" 
+                                 class="card-img-top" 
+                                 alt="{{ item.name }}"
+                                 style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                                 style="height: 200px;">
+                                <i class="fas fa-tools fa-3x text-white"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            
+                            {% if item.category %}
+                                <span class="badge bg-primary mb-2 align-self-start">
+                                    {{ item.category.name }}
+                                </span>
+                            {% endif %}
+                            
+                            <p class="card-text text-muted">
+                                {{ item.description|length > 100 ? item.description|slice(0, 100) ~ '...' : item.description }}
+                            </p>
+                            
+                            <div class="mt-auto">
+                                <div class="mb-3">
+                                    <small class="text-success">
+                                        <i class="bi bi-person-check me-1"></i>
+                                        Propriétaire vérifié
+                                    </small>
+                                </div>
+                                
+                                <a href="{{ path('app_item_show', {id: item.id}) }}" 
+                                   class="btn btn-primary w-100">
+                                    <i class="fas fa-eye me-2"></i>Voir les détails
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<!-- Button trigger modal -->
+<div class="container d-flex justify-content-center">
+    <button type="button" class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Ajouter un nouvel outil
+    </button>
+    <a href="{{ path('app_home') }}" class="btn btn-secondary rounded-pill ms-2">Retour</a>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            {# ✅ form_start AVANT le modal-header #}
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Ajouter un outil</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+                {# Nom de l'outil #}
+                <div class="mb-3">
+                    {{ form_label(form.name, 'Nom de l\'outil', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Perceuse électrique'}}) }}
+                    {{ form_errors(form.name) }}
+                </div>
+
+                {# Description #}
+                <div class="mb-3">
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Décris ton outil...'}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                {# Image #}
+                <div class="mb-3">
+                    {{ form_label(form.picture, 'Photo', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.picture, {'attr': {'class': 'form-control', 'placeholder': 'Nom du fichier image'}}) }}
+                    {{ form_errors(form.picture) }}
+                </div>
+
+                {# Catégorie #}
+                <div class="mb-3">
+                    {{ form_label(form.category, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.category) }}
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" class="btn btn-primary">Ajouter l'outil</button>
+            </div>
+            
+            {# ✅ form_end APRÈS le modal-footer #}
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

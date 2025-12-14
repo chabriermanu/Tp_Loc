@@ -1,0 +1,125 @@
+/* Effet Glassmorphism global */
+body {
+    color: #fff !important;
+}
+
+/* Tous les éléments avec fond clair deviennent transparents */
+.bg-light,
+.bg-white,
+.bg-secondary {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Cards */
+.card {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25) !important;
+}
+
+.card-body,
+.card-header,
+.card-footer {
+    background: transparent !important;
+}
+
+/* Modales */
+.modal-content {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.modal-header, 
+.modal-body, 
+.modal-footer {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Formulaires */
+.form-control, 
+.form-select {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(5px);
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.form-control:focus, 
+.form-select:focus {
+    background: rgba(255, 255, 255, 0.3) !important;
+    color: #fff !important;
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.15);
+}
+
+/* Badges */
+.badge {
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Alertes */
+.alert {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Tables */
+.table {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    color: #fff !important;
+}
+
+.table thead {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Tous les textes en blanc avec ombre */
+h1, h2, h3, h4, h5, h6, 
+p, span, strong, small, 
+.lead, .card-title, .card-text,
+.form-label, .modal-title,
+.text-muted {
+    color: #fff !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Toutes les icônes en blanc */
+.fas, .far, .fab, .fa {
+    color: #fff !important;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Bordures transparentes */
+.border,
+.border-top,
+.border-bottom,
+.border-start,
+.border-end,
+.border-primary,
+.border-secondary,
+.border-success,
+.border-danger,
+.border-warning,
+.border-info {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}

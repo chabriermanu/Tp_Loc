@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes emprunts - MyLoc{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    {# En-tête avec bouton retour #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5">
+                <i class="fas fa-hand-holding text-primary me-2"></i>
+                Mes emprunts
+            </h1>
+            <p class="text-muted">Les outils que vous avez empruntés</p>
+        </div>
+    </div>
+
+    {# Liste des emprunts #}
+    {% if loans is empty %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle fa-2x mb-3"></i>
+            <h5>Aucun emprunt en cours</h5>
+            <p class="mb-0">Vous n'avez emprunté aucun outil pour le moment.</p>
+        </div>
+    {% else %}
+        <div class="row g-4">
+            {% for loan in loans %}
+            <!--  set ...  = syntaxe Twig pour créer une variable set: https://twig.symfony.com/doc/3.x/tags/set.html-->
+                {% set now = date() %} <!-- date() : https://twig.symfony.com/doc/3.x/functions/date.html -->
+                {% set isOverdue = loan.fin < now %}
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm h-100 {% if isOverdue %}border-danger{% endif %}">
+                        {# Image de l'outil #}
+                        <div class="position-relative">
+                            {% if loan.item.picture %}
+                                <img src="{{ asset('uploads/items/' ~ loan.item.picture) }}" 
+                                     class="card-img-top" 
+                                     alt="{{ loan.item.name }}"
+                                     style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                                     style="height: 200px;">
+                                    <i class="fas fa-tools fa-3x text-white"></i>
+                                </div>
+                            {% endif %}
+                            
+                            {# Badge de statut #}
+                            <span class="position-absolute top-0 end-0 m-2 badge 
+                                {% if isOverdue %}bg-danger{% else %}bg-success{% endif %}">
+                                {% if isOverdue %}
+                                    <i class="fas fa-exclamation-triangle me-1"></i>En retard
+                                {% else %}
+                                    <i class="fas fa-check-circle me-1"></i>En cours
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ loan.item.name }}</h5>
+                            
+                            {% if loan.item.category %}
+                                <span class="badge bg-primary mb-3">
+                                    <i class="fas fa-tag me-1"></i>{{ loan.item.category.name }}
+                                </span>
+                            {% endif %}
+                            
+                            {# Informations du propriétaire #}
+                            <div class="border-start border-primary border-3 ps-3 mb-3 bg-light py-2">
+                                <p class="mb-1">
+                                    <i class="fas fa-user text-primary me-2"></i>
+                                    <strong>Emprunté à :</strong><br>
+                                    <span class="ms-4">{{ loan.item.idUser.email }}</span>
+                                </p>
+                            </div>
+                            
+                            {# Dates #}
+                            <div>
+                                <p class="mb-1 small">
+                                    <i class="fas fa-calendar-check text-success me-2"></i>
+                                    <!-- filtre date de Twig https://twig.symfony.com/doc/3.x/filters/date.html -->
+                                    <strong>Début :</strong> {{ loan.start|date('d/m/Y') }}
+                                </p>
+                                <p class="mb-0 small">
+                                    <i class="fas fa-calendar-xmark {% if isOverdue %}text-danger{% else %}text-warning{% endif %} me-2"></i>
+                                    <strong>Retour prévu :</strong> {{ loan.fin|date('d/m/Y') }}
+                                    {% if isOverdue %}
+                                        <span class="badge bg-danger ms-2">Retard !</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        {# Actions #}
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="{{ path('app_item_show', {id: loan.item.id}) }}" 
+                               class="btn btn-sm btn-outline-primary w-100">
+                                <i class="fas fa-eye me-2"></i>Voir l'outil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ path('app_user') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Outil{% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center py-4">
+                    <h1 class="text-center">🛠️ Renseigne ton outil !</h1>
+                    <p class="text-center mb-0">Partage tes outils</p>
+                </div>
+                <div class="card-body p-4">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    
+                        {# Nom de l'outil #}
+                        <div class="mb-3">
+                            {{ form_label(form.name, 'Nom de l\'outil', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Perceuse électrique'}}) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+
+                        {# Description #}
+                        <div class="mb-3">
+                            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Décris ton outil...'}}) }}
+                            {{ form_errors(form.description) }}
+                        </div>
+
+                         {# Image #}
+                        <div class="mb-3">
+                            {{ form_label(form.picture, 'Photo', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.picture, {'attr': {'class': 'form-control', 'placeholder': 'Nom du fichier image'}}) }}
+                            {{ form_errors(form.picture) }}
+                        </div>
+
+                        {# Catégorie #}
+                        <div class="mb-3">
+                            {{ form_label(form.Category, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.Category, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.Category) }}
+                        </div>
+
+                        {# Boutons #}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('app_item') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Retour
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                        </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                
+{% endblock %}

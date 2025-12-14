@@ -22,11 +22,11 @@ class Item
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $picture = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
-    private ?Category $Category = null;
+    private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
     private ?User $idUser = null;
@@ -85,12 +85,12 @@ class Item
 
     public function getCategory(): ?Category
     {
-        return $this->Category;
+        return $this->category;
     }
 
-    public function setCategory(?Category $Category): static
+    public function setCategory(?Category $category): static
     {
-        $this->Category = $Category;
+        $this->category = $category;
 
         return $this;
     }
@@ -136,4 +136,5 @@ class Item
 
         return $this;
     }
+    
 }

@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon outil{% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3>{{ item.name }}</h3>
+                </div>
+                <div class="card-body bg-white p-4">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th width="200">ID :</th>
+                                <td>{{ item.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nom</th>
+                                <td>{{ item.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td>{{ item.description }}</td>
+                            </tr>
+                            {% if app.user %}
+                            <tr>
+                                <th>Propriétaire</th>
+                                <td>{{ item.idUser }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    
+                    <div class="mt-4">
+                        {# Vérifie si l'utilisateur connecté est le propriétaire #}
+                        {% if app.user and app.user.id == item.idUser.id %}
+                            {# Boutons pour le propriétaire #}
+                            <a href="{{ path('app_item_edit', {'id': item.id}) }}" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Modifier
+                            </a>
+                            <a href="{{ path('app_user_tools') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Retour à la liste
+                            </a>
+                            
+                            <form method="post" action="{{ path('app_item_delete', {'id': item.id}) }}" style="display:inline-block;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?')">
+                                    <i class="bi bi-trash"></i> Supprimer
+                                </button>
+                            </form>
+                        {% else %}
+                            {# Boutons pour les autres utilisateurs #}
+                            {% if loanForm %}
+                                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#loanModal">
+                                    <i class="bi bi-hand-thumbs-up"></i> Demander l'emprunt
+                                </button>
+                            {% else %}
+                                {# Message si l'utilisateur n'est pas connecté #}
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    <a href="{{ path('app_login') }}" class="alert-link">Connectez-vous</a> pour emprunter cet outil.
+                                </div>
+                            {% endif %}
+                            
+                            <a href="{{ path('app_user_tools') }}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Retour à la liste
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Modale Bootstrap pour le formulaire d'emprunt #}
+{% if loanForm %}
+<div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="loanModalLabel">
+                    <i class="bi bi-calendar-check"></i> Demander à emprunter cet outil
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ form_start(loanForm, {'attr': {'id': 'loan-form'}}) }}
+                    <div class="mb-3">
+                        {{ form_label(loanForm.start) }}
+                        {{ form_widget(loanForm.start, {
+                            'attr': {
+                                'class': 'form-control',
+                                'id': 'loan-start-date'
+                            }
+                        }) }}
+                        {{ form_errors(loanForm.start) }}
+                        <small class="text-muted">Date minimale : aujourd'hui</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form_label(loanForm.fin) }}
+                        {{ form_widget(loanForm.fin, {
+                            'attr': {
+                                'class': 'form-control',
+                                'id': 'loan-end-date',
+                                'required': 'required'
+                            }
+                        }) }}
+                        {{ form_errors(loanForm.fin) }}
+                        <small class="text-muted">Obligatoire - Après la date de début</small>
+                    </div>
+                    
+                   
+                {{ form_end(loanForm) }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Annuler
+                </button>
+                <button type="submit" form="loan-form" class="btn btn-primary">
+                    <i class="bi bi-hand-thumbs-up"></i> Demander l'emprunt
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Récupérer les champs de date
+    const startDateInput = document.getElementById('loan-start-date');
+    const endDateInput = document.getElementById('loan-end-date');
+    
+    if (startDateInput && endDateInput) {
+        // Obtenir la date du jour au format YYYY-MM-DD
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Pré-remplir la date de début avec aujourd'hui
+        if (!startDateInput.value) {
+            startDateInput.value = today;
+        }
+        
+        // Définir la date minimale pour la date de début (aujourd'hui)
+        startDateInput.setAttribute('min', today);
+        
+        // Fonction pour mettre à jour la date minimale de fin
+        function updateEndDateMin() {
+            const startValue = startDateInput.value;
+            if (startValue) {
+                // La date de fin doit être au moins le lendemain de la date de début
+                const minEndDate = new Date(startValue);
+                minEndDate.setDate(minEndDate.getDate() + 1);
+                endDateInput.setAttribute('min', minEndDate.toISOString().split('T')[0]);
+            }
+        }
+        
+        // Mettre à jour la date min de fin au chargement
+        updateEndDateMin();
+        
+        // Mettre à jour la date min de fin quand la date de début change
+        startDateInput.addEventListener('change', updateEndDateMin);
+        
+        // Validation avant soumission
+        document.getElementById('loan-form').addEventListener('submit', function(e) {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            const todayDate = new Date(today);
+            
+            // Vérifier que la date de début n'est pas dans le passé
+            if (startDate < todayDate) {
+                e.preventDefault();
+                alert('La date de début ne peut pas être antérieure à aujourd\'hui.');
+                return false;
+            }
+            
+            // Vérifier que la date de fin est après la date de début
+            if (endDate <= startDate) {
+                e.preventDefault();
+                alert('La date de fin doit être postérieure à la date de début.');
+                return false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

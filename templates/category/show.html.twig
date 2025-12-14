@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.name }} - MyLoc{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    {# En-tête avec retour #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5">
+                <i class="fas fa-tag text-primary me-2"></i>
+                {{ category.name }}
+            </h1>
+        </div>
+        <a href="{{ path('app_category') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+
+    {# Statistiques #}
+    <div class="alert alert-info mb-4">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>{{ items|length }}</strong> outil{% if items|length > 1 %}s{% endif %} disponible{% if items|length > 1 %}s{% endif %} dans cette catégorie
+    </div>
+
+    {# Liste des items #}
+    {% if items is empty %}
+        <div class="alert alert-warning text-center">
+            <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+            <h5>Aucun outil dans cette catégorie</h5>
+            <p class="mb-0">Il n'y a pas encore d'outils disponibles dans cette catégorie.</p>
+        </div>
+    {% else %}
+        <div class="row g-4">
+            {% for item in items %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        {# Image de l'outil #}
+                        {% if item.picture %}
+                            <img src="{{ asset('uploads/items/' ~ item.picture) }}" 
+                                 class="card-img-top" 
+                                 alt="{{ item.name }}"
+                                 style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                                 style="height: 200px;">
+                                <i class="fas fa-tools fa-3x text-white"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            
+                            <p class="card-text text-muted flex-grow-1">
+                                {{ item.description|length > 100 ? item.description|slice(0, 100) ~ '...' : item.description }}
+                            </p>
+                            
+                            {# Propriétaire #}
+                            <div class="mb-3">
+                                <small class="text-success">
+                                    <i class="fas fa-user me-1"></i>
+                                    Proposé par {{ item.idUser.email }}
+                                </small>
+                            </div>
+                            
+                            {# Bouton voir détails #}
+                            <a href="{{ path('app_item_show', {id: item.id}) }}" 
+                               class="btn btn-primary w-100">
+                                <i class="fas fa-eye me-2"></i>Voir les détails
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+<div class="mt-4">
+    <a href="{{ path('app_category') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Retour aux Catégories
+    </a>
+</div>
+{% endblock %}

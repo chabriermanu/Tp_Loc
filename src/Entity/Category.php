@@ -24,7 +24,7 @@ class Category
     /**
      * @var Collection<int, Item>
      */
-    #[ORM\OneToMany(targetEntity: Item::class, mappedBy: 'Category')]
+    #[ORM\OneToMany(targetEntity: Item::class, mappedBy: 'category')]
     private Collection $items;
 
     public function __construct()
@@ -89,5 +89,9 @@ class Category
         }
 
         return $this;
+    }
+     public function __toString(): string
+    {
+        return $this->name ?? ''; // Affiche le nom de la catégorie
     }
 }

@@ -26,6 +26,12 @@ class Loan
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $fin = null;
 
+    #[ORM\Column(length: 20)]
+    private string $status = 'in_progress';
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $returnedAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -39,7 +45,6 @@ class Loan
     public function setItem(?Item $item): static
     {
         $this->item = $item;
-
         return $this;
     }
 
@@ -51,7 +56,6 @@ class Loan
     public function setIdUser(?User $idUser): static
     {
         $this->idUser = $idUser;
-
         return $this;
     }
 
@@ -63,7 +67,6 @@ class Loan
     public function setStart(\DateTime $start): static
     {
         $this->start = $start;
-
         return $this;
     }
 
@@ -75,7 +78,53 @@ class Loan
     public function setFin(\DateTime $fin): static
     {
         $this->fin = $fin;
-
         return $this;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getReturnedAt(): ?\DateTime
+    {
+        return $this->returnedAt;
+    }
+
+    public function setReturnedAt(?\DateTime $returnedAt): static
+    {
+        $this->returnedAt = $returnedAt;
+        return $this;
+    }
+
+    public function getDuration(): int
+    {
+        if (!$this->start || !$this->fin) {
+            return 0;
+        }
+        return $this->start->diff($this->fin)->days;
+    }
+
+    public function markAsReturned(): static
+    {
+        $this->returnedAt = new \DateTime();
+        $this->status = 'completed';
+        return $this;
+    }
+
+    public function isLate(): bool
+    {
+        if ($this->status === 'completed' || !$this->fin) {
+            return false;
+        }
+        
+        $now = new \DateTime();
+        return $now > $this->fin;
     }
 }

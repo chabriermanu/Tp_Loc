@@ -15,7 +15,10 @@ class CategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Category::class);
     }
-
+    /* Récupère tous les items d'une catégorie
+     * @return array
+     */
+    
     //    /**
     //     * @return Category[] Returns an array of Category objects
     //     */

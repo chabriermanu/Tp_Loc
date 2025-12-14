@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes prêts - MyLoc{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    {# En-tête avec bouton retour #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5">
+                <i class="fas fa-handshake text-warning me-2"></i>
+                Mes prêts
+            </h1>
+            <p class="text-muted">Biens que vous avez prêtés à d'autres utilisateurs</p>
+        </div>
+    </div>
+
+    {# Liste des prêts #}
+    {% if loans is empty %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle fa-2x mb-3"></i>
+            <h5>Aucun prêt en cours</h5>
+            <p class="mb-0">Vous n'avez prêté aucun bien pour le moment.</p>
+        </div>
+    {% else %}
+        <div class="row g-4">
+            {% for loan in loans %}
+                {% set now = date() %}
+                {% set isOverdue = loan.fin < now and loan.status != 'completed' %}
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm h-100 {% if isOverdue %}border-danger{% endif %}">
+                        {# Image de l'outil #}
+                        <div class="position-relative">
+                            {% if loan.item.picture %}
+                                <img src="{{ asset('uploads/items/' ~ loan.item.picture) }}" 
+                                     class="card-img-top" 
+                                     alt="{{ loan.item.name }}"
+                                     style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                                     style="height: 200px;">
+                                    <i class="fas fa-tools fa-3x text-white"></i>
+                                </div>
+                            {% endif %}
+                            
+                            {# Badge de statut #}
+                            {% if loan.status == 'completed' %}
+                                <span class="position-absolute top-0 end-0 m-2 badge bg-success">
+                                    <i class="fas fa-check-circle me-1"></i>Restitué
+                                </span>
+                            {% elseif isOverdue %}
+                                <span class="position-absolute top-0 end-0 m-2 badge bg-danger">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>En retard
+                                </span>
+                            {% else %}
+                                <span class="position-absolute top-0 end-0 m-2 badge bg-success">
+                                    <i class="fas fa-clock me-1"></i>En cours
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ loan.item.name }}</h5>
+                            
+                            {% if loan.item.category %}
+                                <span class="badge bg-primary mb-3">
+                                    <i class="fas fa-tag me-1"></i>{{ loan.item.category.name }}
+                                </span>
+                            {% endif %}
+                            
+                            {# Informations de l'emprunteur #}
+                            <div class="border-start border-warning border-3 ps-3 mb-3 bg-light py-2">
+                                <p class="mb-1">
+                                    <i class="fas fa-user text-warning me-2"></i>
+                                    <strong>Prêté à :</strong><br>
+                                    <span class="ms-4">{{ loan.idUser.email }}</span>
+                                </p>
+                            </div>
+                            
+                            {# Dates #}
+                            <div>
+                                <p class="mb-1 small">
+                                    <i class="fas fa-calendar-check text-success me-2"></i>
+                                    <strong>Début :</strong> {{ loan.start|date('d/m/Y') }}
+                                </p>
+                                <p class="mb-1 small">
+                                    <i class="fas fa-calendar-xmark {% if isOverdue %}text-danger{% else %}text-warning{% endif %} me-2"></i>
+                                    <strong>Retour prévu :</strong> {{ loan.fin|date('d/m/Y') }}
+                                    {% if isOverdue %}
+                                        <span class="badge bg-danger ms-2">Retard !</span>
+                                    {% endif %}
+                                </p>
+                                <p class="mb-0 small">
+                                    <i class="fas fa-clock text-info me-2"></i>
+                                    <strong>Durée :</strong> {{ loan.duration }} jour{% if loan.duration > 1 %}s{% endif %}
+                                </p>
+                                
+                                {# Si restitué, afficher la date #}
+                                {% if loan.status == 'completed' and loan.returnedAt %}
+                                    <p class="mb-0 small mt-2">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        <strong>Restitué le :</strong> {{ loan.returnedAt|date('d/m/Y') }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {# Pied de carte avec bouton action #}
+                        <div class="card-footer bg-transparent border-top">
+                            {% if loan.status == 'completed' %}
+                                <div class="text-center text-success">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    <strong>Bien restitué</strong>
+                                </div>
+                            {% else %}
+                                <form method="post" action="{{ path('loan_mark_returned', {id: loan.id}) }}" 
+                                      onsubmit="return confirm('Confirmer que cet outil vous a été restitué ?');">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="fas fa-check me-2"></i>Marquer comme restitué
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ path('app_user') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+</div>
+{% endblock %}
